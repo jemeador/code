@@ -1,6 +1,6 @@
 /*
  * Author: Jeremy Meador
- * Problem: 
+ * Problem: 11890 Calculus Simplified
  *
  */
 
@@ -23,7 +23,10 @@ int parse_exp(char * e, int start, int end, int pos)
     if (e[j] == '-')
     {
       if (e[j+1] == '(')
+      {
         j = parse_exp(e,j+2,end,pos*-1);
+        printd("reenter mode: %d\n", pos);
+      }
       else if (e[j+1] == 'x' && (pos == 1))
       {
         printd("-neg\n");
@@ -42,7 +45,7 @@ int parse_exp(char * e, int start, int end, int pos)
       closes++;
       if (closes > opens)
       {
-        return j+1;
+        return j;
       }
     }
     else if (e[j] == 'x' && (pos == -1))
