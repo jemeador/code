@@ -1,0 +1,152 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class Main
+{
+  public static void main(String[] args)
+  {
+    Scanner in = new Scanner(System.in);
+    int count = in.nextInt();
+    in.next();
+    String num1, num2;
+    int sign1 = 1, sign2 = 1;
+    int decpt1 = 0, decpt2 = 0;
+    while (count != 0)
+    {
+      num1 = in.next();
+      if (!num1.equals("0")) {
+        
+        if (num1.charAt(0) == '-')
+        {
+          num1 = num1.substring(1);
+          sign1 = -1;
+        }
+        else
+          sign1 = 1;
+        decpt1 = num1.indexOf('.');
+        if (decpt1 == -1)
+          decpt1 = num1.length();
+        else
+          num1 = num1.replace(".","");
+        num2 = in.next();  
+        while (!num2.equals("0"))
+        {
+          if (num2.charAt(0) == '-')
+          {
+            num2 = num2.substring(1);
+            sign2 = -1;
+          }
+          else
+            sign2 = 1;
+          decpt2 = num2.indexOf('.');
+          if (decpt2 == -1)
+            decpt2 = num2.length();
+          else
+            num2 = num2.replace(".","");
+          int diff = decpt1-decpt2;
+          if (diff < 0)
+          {
+            for (int j=diff;j!=0;j++)
+              num1 = "0".concat(num1);
+            decpt1 = decpt2;  
+          }
+          else
+          {
+            for (int j=diff;j!=0;j--)
+              num2 = "0".concat(num2);
+          }
+          char[] sum = new char[num1.length()+num2.length()+1];
+          int tail = 0;
+          int shortest = num1.length();
+          if (num2.length() < shortest)
+          {
+            shortest = num2.length();
+            tail = num1.length()-num2.length();
+            for (int j=0;j<tail;j++)
+              num2 = num2.concat("0");
+          }
+          else if (num1.length() < num2.length())
+          {
+            tail = num2.length()-num1.length();
+            for (int j=0;j<tail;j++)
+              num1 = num1.concat("0");
+          }
+          System.out.println(num1.length());
+          sum[num1.length()] = '0';
+          if (sign1*sign2 == -1)
+          {
+            int i;
+            for (i=0;i<shortest;i++)
+            {
+              if (num1.charAt(i)>num2.charAt(i))
+              {
+                for (int j=num1.length()-1;j>=0;j--)
+                {
+                  sum[j+1] += (num1.charAt(j) - '0')-(num2.charAt(j) - '0');
+                  if (sum[j+1] < '0')
+                  {
+                    sum[j+1] += 10;
+                    sum[j] = '0'-1;
+                  }
+                  else
+                    sum[j] = '0';
+                }
+                break;
+              }
+              if (num1.charAt(i)<num2.charAt(i))
+              {
+                for (int j=num1.length()-1;j>=0;j--)
+                {
+                  sum[j+1] += (num2.charAt(j) - '0')-(num1.charAt(j) - '0');
+                  if (sum[j+1] < '0')
+                  {
+                    sum[j+1] += 10;
+                    sum[j] = '0'-1;
+                  }
+                  else
+                    sum[j] = '0';
+                }
+                sign1 = sign2;
+                break;
+              }
+            }
+            if (i == shortest)
+            {
+              num1 = "0";
+              decpt1 = 1;
+              sign1 = 1;
+            }
+          }
+          else
+          {
+            for (int j=shortest-1;j>=0;j--)
+            {
+              sum[j+1] += (num1.charAt(j) - '0')+(num2.charAt(j) - '0');
+              if (sum[j+1] > '9')
+              {
+                sum[j+1] -= 10;
+                sum[j] = '1';
+              }
+              else
+                sum[j] = '0';
+            }
+          }
+          num1 = new String(sum);
+          System.out.println("num1: "+num1 + " decpt: " +  decpt1 + " sign: " + sign1);
+          decpt1++;
+          num2 = in.next();
+        }
+      }
+      if (sign1 == -1)
+        System.out.print("-");
+      if (decpt1 != num1.length())  
+        System.out.println(num1.substring(0,decpt1) + "." + num1.substring(decpt1));
+      else
+        System.out.println(num1);
+      count--;
+    }
+  }
+}
+
+
+

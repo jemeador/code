@@ -1,0 +1,148 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+#define DEBUG 1
+#define printd if (DEBUG) printf
+
+typedef struct
+{
+  int size;
+  int **e;
+} Matrix;
+
+int isStep(char a, char b)
+{
+  int x;
+  if (a % 2 == 0)
+  {
+    return !((a>>1)^b);
+  }
+  char z = (a>>1)^b;
+  return !((z<=0)||(z&(z-1)));
+}
+
+void makeVector(int k, char * v, int * z)
+{
+  char a;
+  int j, x;
+  *z=0;
+  if (k<1) 
+  {
+    return;
+  }
+  for(a = (1<<k)-1; a < 1<<(2*k);a++)
+  {
+    x=0;
+    for (j=1;j < 1<<(2*k);j=j<<1)
+      x+=((j&a)==j);
+    if (k==x)
+    {
+      v[(*z)++] = a;
+    }
+  }
+}
+
+void mult_mat(Matrix * M1, Matrix * M2, Matrix * M3)
+{
+  int i,j,k,sum;
+  int s = M1->size;
+  M3->size = s;
+  /*printd("%d = matrix size\n", s);i*/
+  M3->e = (int **)malloc(sizeof(int *)*s);
+  for (i=0;i<s;i++)
+  {
+    M3->e[i] = (int *)malloc(sizeof(int)*s);
+    for (j=0;j<s;j++)
+    {
+      int sum = 0;
+      for (k=0;k<s;k++)
+        sum = (sum + ((M1->e[i][k] * M2->e[k][j]) % 73405)) % 73405;   
+      M3->e[i][j] = sum;
+    }
+  }
+}
+
+void fastExp(Matrix * M, int p)
+{
+  Matrix * M2 = malloc(sizeof(Matrix)), * M3 = malloc(sizeof(Matrix));
+  if (p==1)
+  {
+    free(M3);
+    return; 
+  }
+  if (p % 2 == 1)
+  {
+    fastExp(M,(p-1)/2);
+    mult_mat(M,M,M2);
+    mult_mat(M,M2,M3);
+    free(M2);
+  }
+  else
+  {
+    fastExp(M,p/2);
+    mult_mat(M,M,M3);
+  }
+  free(M);
+  M = M3;
+  /*while (p > 0)
+  {
+    M2->e = (int**)malloc(sizeof(int*)*M->size);
+    M2->size = M->size;
+    if (p%2 == 1)
+    {
+      printd("sum: %d\n", M->e[0][0]);
+      sum = (sum + M->e[0][0]) % 73405;
+    }
+    if (p == 1)
+    {
+      free(M->e);
+      break;
+    }
+    free(M->e);
+    M->e = M2->e;
+    p = p >> 1;
+  }*/
+}
+
+void run()
+{
+  Matrix * resultMatrix;
+  int n, k, z, i, j;
+  char v[50];
+  scanf("%d %d", &n, &k);
+  makeVector(k,v,&z);
+  if (k>0)
+  {
+    Matrix * M = malloc(sizeof(Matrix));
+    M->size = z;
+    M->e = (int **)malloc(sizeof(int*)*z);
+    for (i=0;i<z;i++)
+    {
+      M->e[i] = (int *)malloc(sizeof(int)*z);
+      for(j=0;j<z;j++)
+      {
+        M->e[i][j] = isStep(v[i],v[j]);
+      }
+      /*printd("\n");*/
+    }
+    /*mult_mat(M,M,resultMatrix);*/
+    fastExp(M,n);
+    printf("%d\n",M->e[0][0]);
+  }
+  else printf("1\n");
+}
+
+int main()
+{
+  int count, j;
+  scanf("%d", &count);
+  for (j=0;j<count;j++)
+  {
+    printf("Case %d: ", j+1);
+    /*printd("%d\n",count);*/
+    run();
+  }
+  return 0;
+}
+

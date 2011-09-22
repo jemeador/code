@@ -1,0 +1,16 @@
+11890 Calculus Simplified
+11894 * Genius MJ
+11879 Multiple of 17
+11839 * Optical Reader
+11827 * Maximum GCD
+11831 * Sticker Collector Robot
+11830 * Contract Revision
+102 * Ecological Bin Packing
+11821 * High Precision Number
+11800 * Determine the Shape
+101 * The Blocks Problem
+993 * Product of digits
+100 * The 3n + 1 problem
+903 * Spiral of Numbers
+12000 * K-Transformed Permutations
+103 Stacking Boxes
